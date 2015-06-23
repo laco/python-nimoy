@@ -1,5 +1,5 @@
 import json
-from nimoy.schemas import DocumentSchema
+from nimoy.schemas import DocumentSchema, DBSchema
 from nimoy.fields import TextField, IntegerField
 from nimoy.utils import ensure_key_order
 
@@ -53,3 +53,31 @@ def test_document_schema_hash_exists():
     fingerprints_take_2 = [schema.fingerprint for schema in schemas]
     assert fingerprints_take_1 == fingerprints_take_2 \
         == ['a3e0b912192a511ca8676a54305cda3764c14116', '1a7a2edc1ae1c4730a6383e5ce086aab6ee0d882', 'de6ab7f18942c5914f7df9559bb964b6ba55bae8']
+
+
+def test_dbschema_load_from_json():
+    sample_schema_dict = {
+        "schemas": {
+            "users": {
+                "fields": {
+                    'name': {'type': 'nimoy.fields.TextField', 'required': False},
+                    'email': {'type': 'nimoy.fields.TextField', 'required': True}
+                },
+                "indexes": [('email',)],
+            },
+            "posts": {
+                 "fields": {
+                     'id': {'type': 'nimoy.fields.IDField', 'required': True},
+                     'title': {'type': 'nimoy.fields.TextField', 'required': True},
+                     'created_at': {'type': 'nimoy.fields.DatetimeField', 'required': True}
+                 },
+                 "indexes": [('id',)]
+            }
+        }
+    }
+    dbschema = DBSchema.from_json(json_string=json.dumps(sample_schema_dict))
+    dbschema_json = dbschema.to_json()
+
+    assert isinstance(dbschema._schemas['users'], DocumentSchema)
+    assert isinstance(dbschema._schemas['posts'], DocumentSchema)
+    assert dbschema_json is not None

@@ -50,3 +50,28 @@ class DocumentSchema(object):
     @property
     def fingerprint(self):
         return _fp(self.to_json())
+
+
+class DBSchema(object):
+
+    def __init__(self, schemas=None, options=None):
+        schemas = schemas or {}
+        self._schemas = {name: self._parse_schema_dict(schema_dict) for name, schema_dict in schemas.items()}
+        self._options = options or {}
+
+    @classmethod
+    def from_json(cls, json_string=None):
+        json_document = json.loads(json_string)
+        return cls(schemas=json_document.get('schemas'), options=json_document.get('options'))
+
+    def _parse_schema_dict(self, schema_dict):
+        return DocumentSchema(**schema_dict)
+
+    def to_json(self):
+        return json.dumps(self.to_dict(), sort_keys=True)
+
+    def to_dict(self):
+        return ensure_key_order({
+            'schemas': {sname: schema.to_dict() for sname, schema in self._schemas.items()},
+            'options': self._options
+        })

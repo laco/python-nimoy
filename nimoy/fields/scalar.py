@@ -11,3 +11,11 @@ class IntegerField(BaseScalarField):
 
 class TextField(BaseScalarField):
     pass
+
+
+class DatetimeField(BaseScalarField):
+    pass
+
+
+class IDField(BaseScalarField):
+    pass

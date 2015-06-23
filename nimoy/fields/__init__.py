@@ -1,4 +1,4 @@
-from .scalar import IntegerField, TextField
+from .scalar import IntegerField, TextField, DatetimeField, IDField
 
 
-__all__ = ['IntegerField', 'TextField']
+__all__ = ['IntegerField', 'TextField', 'DatetimeField', 'IDField']
