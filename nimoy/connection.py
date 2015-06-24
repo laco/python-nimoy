@@ -1,5 +1,6 @@
 from nimoy.utils import import_class
 from nimoy.schemas import DBSchema
+import uuid as _uuid
 
 
 class DatabaseConnection(object):
@@ -38,3 +39,12 @@ class DatabaseConnection(object):
 
     def delete_item(self, schema_name, _id):
         pass
+
+    def query(self, schema_name, _w, limit=10):
+        return self.backend.query(schema_name, _w, limit)
+
+    def scan(self, schema_name, _w, limit=10):
+        return self.backend.scan(schema_name, _w, limit)
+
+    def uuid(self):
+        return _uuid.uuid4().hex
