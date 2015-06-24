@@ -1,8 +1,12 @@
+from nimoy.exceptions import ItemNotFound
 from .base import BaseBackend
+
 try:
     from boto.dynamodb2.table import Table
+    from boto.dynamodb2.exceptions import ItemNotFound as BotoItemNotFound
 except ImportError:
     Table = None
+    BotoItemNotFound = None
 
 
 class DynamoDBBackend(BaseBackend):
@@ -24,8 +28,11 @@ class DynamoDBBackend(BaseBackend):
         return table.put_item(data=_data)
 
     def get_item(self, schema_name, _id):
-        table = Table(schema_name)
-        return table.get_item(**self._kwargs_for_id(schema_name, _id))
+        try:
+            table = Table(schema_name)
+            return table.get_item(**self._kwargs_for_id(schema_name, _id))
+        except BotoItemNotFound:
+            raise ItemNotFound("Item not found for id {} in {}.".format(_id, schema_name))
 
     def delete_item(self, schema_name, _id):
         table = Table(schema_name)
