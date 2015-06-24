@@ -22,8 +22,8 @@ def read_file(f):
 setup(
     name='nimoy',
     version=__version__,
-    url='https://github.com/laco/nimoy/',
-    download_url='https://github.com/laco/nimoy/tarball/' + __version__,
+    url='https://github.com/laco/python-nimoy/',
+    download_url='https://github.com/laco/python-nimoy/tarball/' + __version__,
     license='Apache2.0',
     author='László Andrási',
     author_email='mail@laszloandrasi.com',
