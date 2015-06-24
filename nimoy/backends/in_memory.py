@@ -18,7 +18,12 @@ class InMemoryBackend(BaseBackend):
         if schema_name not in _global_state:
             _global_state[schema_name] = {}
         _global_state[schema_name][self._primary_key(schema_name, _data)] = _data
-        return _data
+        return True
 
     def get_item(self, schema_name, _id):
         return _global_state[schema_name].get(_id)
+
+    def delete_item(self, schema_name, _id):
+        if _id in _global_state[schema_name]:
+            del _global_state[schema_name][_id]
+        return True

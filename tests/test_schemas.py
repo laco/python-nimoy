@@ -57,22 +57,20 @@ def test_document_schema_hash_exists():
 
 def test_dbschema_load_from_json():
     sample_schema_dict = {
-        "schemas": {
-            "users": {
-                "fields": {
-                    'name': {'type': 'nimoy.fields.TextField', 'required': False},
-                    'email': {'type': 'nimoy.fields.TextField', 'required': True}
-                },
-                "indexes": [('email',)],
+        "users": {
+            "fields": {
+                'name': {'type': 'nimoy.fields.TextField', 'required': False},
+                'email': {'type': 'nimoy.fields.TextField', 'required': True}
             },
-            "posts": {
-                 "fields": {
-                     'id': {'type': 'nimoy.fields.IDField', 'required': True},
-                     'title': {'type': 'nimoy.fields.TextField', 'required': True},
-                     'created_at': {'type': 'nimoy.fields.DatetimeField', 'required': True}
-                 },
-                 "indexes": [('id',)]
-            }
+            "indexes": [('email',)],
+        },
+        "posts": {
+            "fields": {
+                'id': {'type': 'nimoy.fields.IDField', 'required': True},
+                'title': {'type': 'nimoy.fields.TextField', 'required': True},
+                'created_at': {'type': 'nimoy.fields.DatetimeField', 'required': True}
+            },
+            "indexes": [('id',)]
         }
     }
     dbschema = DBSchema.from_json(json_string=json.dumps(sample_schema_dict))

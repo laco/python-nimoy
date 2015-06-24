@@ -3,8 +3,10 @@ import hashlib
 from collections import OrderedDict
 
 
-def import_class(cls_path):
+def import_class(cls_path, default_prefix='nimoy'):
     if isinstance(cls_path, str):
+        if '.' not in cls_path:
+            cls_path = '.'.join([default_prefix, cls_path])
         dotposition = cls_path.rfind('.')
         module_name = cls_path[:dotposition]
         class_name = cls_path[dotposition + 1:]

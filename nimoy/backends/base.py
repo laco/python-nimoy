@@ -10,3 +10,6 @@ class BaseBackend(object):
 
     def get_item(self, schema_name, _id):
         raise NotImplemented()
+
+    def delete_item(self, schema_name, _id):
+        raise NotImplemented()

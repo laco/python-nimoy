@@ -5,10 +5,10 @@ from collections import OrderedDict
 
 class DocumentSchema(object):
 
-    def __init__(self, fields, indexes, options=None):
+    def __init__(self, fields, indexes, **options):
         self._fields = OrderedDict([(fname, self._parse_field(fops)) for fname, fops in fields.items()])
         self._indexes = [self._parse_index(index) for index in indexes]
-        self._options = options or {}
+        self._options = options
 
     @classmethod
     def from_json(cls, json_string=None):
@@ -19,7 +19,7 @@ class DocumentSchema(object):
     def from_dict(cls, schema_dict):
         return cls(fields=schema_dict.get('fields', {}),
                    indexes=schema_dict.get('indexes', []),
-                   options=schema_dict.get('options', {}))
+                   **schema_dict.get('options', {}))
 
     def to_dict(self):
         return ensure_key_order({
@@ -33,7 +33,7 @@ class DocumentSchema(object):
 
     def _parse_field(self, options):
         return {
-            'type': import_class(options.get('type', 'nimoy.fields.TextField')),
+            'type': import_class(options.get('type', 'TextField'), default_prefix='nimoy.fields'),
             'required': options.get('required', False)
         }
 
@@ -65,10 +65,10 @@ class DocumentSchema(object):
 
 class DBSchema(object):
 
-    def __init__(self, schemas=None, options=None):
+    def __init__(self, schemas=None, **options):
         schemas = schemas or {}
         self._schemas = {name: self._parse_schema_dict(schema_dict) for name, schema_dict in schemas.items()}
-        self._options = options or {}
+        self._options = options
 
     @classmethod
     def from_json(cls, json_string=None):
@@ -76,11 +76,11 @@ class DBSchema(object):
         return cls.from_dict(json_document)
 
     @classmethod
-    def from_dict(cls, schema_dict):
-        return cls(schemas=schema_dict.get('schemas'), options=schema_dict.get('options'))
+    def from_dict(cls, schema_dict, **options):
+        return cls(schemas=schema_dict, **options)
 
     def _parse_schema_dict(self, schema_dict):
-        return DocumentSchema(**schema_dict)
+        return DocumentSchema(fields=schema_dict['fields'], indexes=schema_dict['indexes'], **schema_dict.get('options', {}))
 
     def to_json(self):
         return json.dumps(self.to_dict(), sort_keys=True)
