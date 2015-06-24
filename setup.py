@@ -29,7 +29,7 @@ setup(
     author_email='mail@laszloandrasi.com',
     description='Python3 Database Access Layer with Simple Functions and Dictionaries',
     long_description=read_file('README.md') + '\n\n',
-    packages=['nimoy',],
+    packages=['nimoy', 'nimoy.backends', 'nimoy.fields'],
     include_package_data=True,
     zip_safe=False,
     platforms='any',
