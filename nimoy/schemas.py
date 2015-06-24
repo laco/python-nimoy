@@ -13,9 +13,13 @@ class DocumentSchema(object):
     @classmethod
     def from_json(cls, json_string=None):
         json_document = json.loads(json_string)
-        return cls(fields=json_document.get('fields', {}),
-                   indexes=json_document.get('indexes', []),
-                   options=json_document.get('options', {}))
+        return cls.from_dict(json_document)
+
+    @classmethod
+    def from_dict(cls, schema_dict):
+        return cls(fields=schema_dict.get('fields', {}),
+                   indexes=schema_dict.get('indexes', []),
+                   options=schema_dict.get('options', {}))
 
     def to_dict(self):
         return ensure_key_order({
@@ -51,6 +55,13 @@ class DocumentSchema(object):
     def fingerprint(self):
         return _fp(self.to_json())
 
+    @property
+    def primary_key(self):
+        return self._indexes[0]
+
+    def validate_data(self, _data):
+        return _data
+
 
 class DBSchema(object):
 
@@ -62,7 +73,11 @@ class DBSchema(object):
     @classmethod
     def from_json(cls, json_string=None):
         json_document = json.loads(json_string)
-        return cls(schemas=json_document.get('schemas'), options=json_document.get('options'))
+        return cls.from_dict(json_document)
+
+    @classmethod
+    def from_dict(cls, schema_dict):
+        return cls(schemas=schema_dict.get('schemas'), options=schema_dict.get('options'))
 
     def _parse_schema_dict(self, schema_dict):
         return DocumentSchema(**schema_dict)
@@ -75,3 +90,14 @@ class DBSchema(object):
             'schemas': {sname: schema.to_dict() for sname, schema in self._schemas.items()},
             'options': self._options
         })
+
+    def validate_data(self, schema_name, _data):
+        if schema_name in self._schemas:
+            return self._schemas[schema_name].validate_data(_data)
+        raise ValueError("Invalid data for {}: {}".format(schema_name, _data))
+
+    def get_fingerprint(self, schema_name):
+        return self._schemas[schema_name].fingerprint
+
+    def get_primary_key(self, schema_name):
+        return self._schemas[schema_name].primary_key
