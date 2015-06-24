@@ -44,7 +44,7 @@ class DocumentSchema(object):
             return field in self._fields
         if all([_is_valid_field(field) for field in index]):
             return index
-        else:
+        else:  # pragma: nocover
             raise Exception("Invalid index {}".format(str(index)))
 
     @property
