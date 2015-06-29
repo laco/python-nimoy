@@ -1,3 +1,4 @@
+import decimal
 from nimoy.exceptions import ItemNotFound
 from .base import BaseBackend
 
@@ -49,6 +50,18 @@ class DynamoDBBackend(BaseBackend):
         kwargs = parse_w_for_kwargs(_w)
         kwargs['limit'] = limit
         return table.scan(**kwargs)
+
+    def prepare_data(self, schema_name, _data, level=0):
+        if isinstance(_data, dict):
+            return {k: self.prepare_data(schema_name, v, level=level+1) for k, v in _data.items()}
+        elif isinstance(_data, (str, int)):
+            return _data
+        elif isinstance(_data, float):
+            return decimal.Decimal(str(_data))
+        elif isinstance(_data, (list, tuple)):
+            return [self.prepare_data(schema_name, v, level=level+1) for v in _data]
+        else:
+            return _data
 
 
 def parse_w_for_kwargs(_w):
