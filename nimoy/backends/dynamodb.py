@@ -51,6 +51,11 @@ class DynamoDBBackend(BaseBackend):
         kwargs['limit'] = limit
         return table.scan(**kwargs)
 
+    def query_count(self, schema_name, _w):
+        table = Table(schema_name)
+        kwargs = parse_w_for_kwargs(_w)
+        return table.query_count(**kwargs)
+
     def prepare_data(self, schema_name, _data, level=0):
         if isinstance(_data, dict):
             return {k: self.prepare_data(schema_name, v, level=level+1) for k, v in _data.items()}

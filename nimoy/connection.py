@@ -46,5 +46,8 @@ class DatabaseConnection(object):
     def scan(self, schema_name, _w, limit=10):
         return self.backend.scan(schema_name, _w, limit)
 
+    def query_count(self, schema_name, _w):
+        return self.backend.query_count(schema_name, _w)
+
     def uuid(self):
         return _uuid.uuid4().hex
