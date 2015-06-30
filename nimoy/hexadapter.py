@@ -24,8 +24,8 @@ def query(cn, schema_name, _w, limit=10):
     return cn.g_('nimoy_db').query(schema_name, _w, limit)
 
 
-def query_count(cn, schema_name, _w, limit=10):
-    return cn.g_('nimoy_db').query_count(schema_name, _w, limit)
+def query_count(cn, schema_name, _w):
+    return cn.g_('nimoy_db').query_count(schema_name, _w)
 
 
 def scan(cn, schema_name, _w, limit=10):
