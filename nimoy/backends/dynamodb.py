@@ -24,9 +24,9 @@ class DynamoDBBackend(BaseBackend):
             kwargs = {key_names[0]: _id}
         return kwargs
 
-    def put_item(self, schema_name, _data):
+    def put_item(self, schema_name, _data, overwrite=False):
         table = Table(schema_name)
-        return table.put_item(data=_data)
+        return table.put_item(data=_data, overwrite=overwrite)
 
     def get_item(self, schema_name, _id):
         try:

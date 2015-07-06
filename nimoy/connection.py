@@ -24,7 +24,7 @@ class DatabaseConnection(object):
         _data['__sv'] = self.schema.get_fingerprint(schema_name)
         return _data
 
-    def put_item(self, schema_name, _data):
+    def put_item(self, schema_name, _data, overwrite=False):
         return self.backend.put_item(
             schema_name,
             self._add_version_info(
@@ -32,7 +32,8 @@ class DatabaseConnection(object):
                 self.backend.prepare_data(
                     schema_name,
                     self.schema.validate_data(
-                        schema_name, _data))))
+                        schema_name, _data))),
+            overwrite=overwrite)
 
     def get_item(self, schema_name, _id):
         return self.backend.get_item(schema_name, _id)

@@ -15,7 +15,7 @@ class InMemoryBackend(BaseBackend):
         else:
             return tuple(ret)
 
-    def put_item(self, schema_name, _data):
+    def put_item(self, schema_name, _data, overwrite=False):
         if schema_name not in _global_state:
             _global_state[schema_name] = {}
         _global_state[schema_name][self._primary_key(schema_name, _data)] = _data
