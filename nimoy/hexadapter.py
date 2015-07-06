@@ -8,28 +8,28 @@ def init_adapter(cn):
     cn.s_('nimoy_db', db)
 
 
-def get_item(cn, schema_name, _id):
-    return cn.g_('nimoy_db').get_item(schema_name, _id)
+def get_item(cn, schema_name, _id, **kw):
+    return cn.g_('nimoy_db').get_item(schema_name, _id, **kw)
 
 
-def put_item(cn, schema_name, _data):
-    return cn.g_('nimoy_db').put_item(schema_name, _data)
+def put_item(cn, schema_name, _data, **kw):
+    return cn.g_('nimoy_db').put_item(schema_name, _data, **kw)
 
 
-def delete_item(cn, schema_name, _id):
-    return cn.g_('nimoy_db').delete_item(schema_name, _id)
+def delete_item(cn, schema_name, _id, **kw):
+    return cn.g_('nimoy_db').delete_item(schema_name, _id, **kw)
 
 
-def query(cn, schema_name, _w, limit=10):
-    return cn.g_('nimoy_db').query(schema_name, _w, limit)
+def query(cn, schema_name, _w, limit=10, **kw):
+    return cn.g_('nimoy_db').query(schema_name, _w, limit, **kw)
 
 
-def query_count(cn, schema_name, _w):
-    return cn.g_('nimoy_db').query_count(schema_name, _w)
+def query_count(cn, schema_name, _w, **kw):
+    return cn.g_('nimoy_db').query_count(schema_name, _w, **kw)
 
 
-def scan(cn, schema_name, _w, limit=10):
-    return cn.g_('nimoy_db').scan(schema_name, _w, limit)
+def scan(cn, schema_name, _w, limit=10, **kw):
+    return cn.g_('nimoy_db').scan(schema_name, _w, limit, **kw)
 
 
 def uuid(cn):
