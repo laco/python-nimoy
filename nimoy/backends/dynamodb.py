@@ -43,13 +43,13 @@ class DynamoDBBackend(BaseBackend):
         table = Table(schema_name)
         kwargs = parse_w_for_kwargs(_w)
         kwargs['limit'] = limit
-        return table.query_2(**kwargs)
+        return (dict(item) for item in table.query_2(**kwargs))
 
     def scan(self, schema_name, _w, limit=10):
         table = Table(schema_name)
         kwargs = parse_w_for_kwargs(_w)
         kwargs['limit'] = limit
-        return table.scan(**kwargs)
+        return (dict(item) for item in table.scan(**kwargs))
 
     def query_count(self, schema_name, _w):
         table = Table(schema_name)
