@@ -7,18 +7,19 @@ class DatabaseConnection(object):
 
     def __init__(self, **kwargs):
         backend_cls = kwargs.pop('backend', None)
+        schema = kwargs.pop('schema', None)
+
         if backend_cls is None:
             raise AttributeError("Missing 'backend' parameter.")
-        self.backend = import_class(backend_cls)(self)
-
-        schema = kwargs.pop('schema', None)
         if schema is None:
             raise AttributeError("Missing 'schema' parameter.")
         elif isinstance(schema, dict):
             self.schema = DBSchema.from_dict(schema)
         elif isinstance(schema, str):
             self.schema = DBSchema.from_json(schema)
+
         self.options = kwargs
+        self.backend = import_class(backend_cls)(self)
 
     def _add_version_info(self, schema_name, _data):
         _data['__sv'] = self.schema.get_fingerprint(schema_name)
