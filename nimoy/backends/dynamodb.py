@@ -31,9 +31,9 @@ class DynamoDBBackend(BaseBackend):
     def get_item(self, schema_name, _id):
         try:
             table = Table(schema_name)
+            return dict(table.get_item(**self._kwargs_for_id(schema_name, _id)))
         except BotoItemNotFound:
             raise ItemNotFound("Item not found for id {} in {}.".format(_id, schema_name))
-        return dict(table.get_item(**self._kwargs_for_id(schema_name, _id)))
 
     def delete_item(self, schema_name, _id):
         table = Table(schema_name)
