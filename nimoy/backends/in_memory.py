@@ -26,8 +26,8 @@ class InMemoryBackend(BaseBackend):
 
     def get_item(self, schema_name, _id):
         try:
-            return _global_state[schema_name].get(_id)
-        except KeyError:
+            return _global_state[schema_name][_id]
+        except (KeyError, AttributeError):
             raise ItemNotFound("Item not found for id {} in {}.".format(_id, schema_name))
 
     def delete_item(self, schema_name, _id):
