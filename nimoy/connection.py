@@ -40,7 +40,7 @@ class DatabaseConnection(object):
         return self.backend.get_item(schema_name, _id)
 
     def delete_item(self, schema_name, _id):
-        pass
+        return self.backend.get_item(schema_name, _id)
 
     def query(self, schema_name, _w, limit=10):
         return self.backend.query(schema_name, _w, limit)
