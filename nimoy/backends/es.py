@@ -19,7 +19,7 @@ class ElasticsearchBackend(BaseBackend):
 
     def _gen_es_id_for_data(self, schema_name, _data):
         key_names = self._conn.schema.get_primary_key(schema_name)
-        return '_n_'.join([_data[key] for key in key_names])
+        return '_n_'.join([str(_data[key]) for key in key_names])
 
     def _gen_es_id_for_id(self, _id):
         if isinstance(_id, str):
