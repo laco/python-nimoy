@@ -68,6 +68,12 @@ def elastic_parse_wt(wt, fmap):
     def _get_fn_from_fmap(f):
         return fmap.get(f, lambda v: v)
 
+    def _es_exists_rel(r, f, v):
+        return {"exists": {"field": f}}
+
+    def _es_not_exists_rel(r, f, v):
+        return {"not": _es_exists_rel(r, f, v)}
+
     def _es_nin_rel(r, f, v):
         return {"not": {"terms": {f: [_get_fn_from_fmap(f)(v_) for v_ in v]}}}
 
@@ -107,6 +113,7 @@ def elastic_parse_wt(wt, fmap):
                               "eq": _es_eq_rel, "neq": _es_neq_rel,
                               "startswith": _es_startswith,
                               "match": _es_match,
+                              "exists": _es_exists_rel, "notexists": _es_not_exists_rel,
                               "match_all": _es_match_all}
 
     def _filters(wt, fmap):
