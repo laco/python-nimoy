@@ -33,7 +33,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=['mongomock', 'pymongo', 'python-datetime2', 'PyYAML'],
+    install_requires=[],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

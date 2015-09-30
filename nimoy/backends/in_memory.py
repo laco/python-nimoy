@@ -18,19 +18,19 @@ class InMemoryBackend(BaseBackend):
         else:
             return tuple(ret)
 
-    def put_item(self, schema_name, _data, overwrite=False):
+    def put_item(self, schema_name, _data, overwrite=False, consistent=False):
         if schema_name not in _global_state:
             _global_state[schema_name] = {}
         _global_state[schema_name][self._primary_key(schema_name, _data)] = _data
         return True
 
-    def get_item(self, schema_name, _id):
+    def get_item(self, schema_name, _id, consistent=False):
         try:
             return _global_state[schema_name][_id]
         except (KeyError, AttributeError):
             raise ItemNotFound("Item not found for id {} in {}.".format(_id, schema_name))
 
-    def delete_item(self, schema_name, _id):
+    def delete_item(self, schema_name, _id, consistent=False):
         if _id in _global_state[schema_name]:
             del _global_state[schema_name][_id]
         return True

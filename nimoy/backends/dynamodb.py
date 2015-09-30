@@ -16,13 +16,14 @@ class DynamoDBBackend(BaseBackend):
             raise ImportError("Plz. install boto library for DynamoDBBackend.")
         super().__init__(conn)
 
-    def _kwargs_for_id(self, schema_name, _id):
+    def _kwargs_for_id(self, schema_name, _id, **kwargs):
         key_names = self._conn.schema.get_primary_key(schema_name)
         if len(key_names) > 1:
-            kwargs = {name: _id[idx] for idx, name in enumerate(key_names)}
+            _kwargs = {name: _id[idx] for idx, name in enumerate(key_names)}
         else:
-            kwargs = {key_names[0]: _id}
-        return kwargs
+            _kwargs = {key_names[0]: _id}
+        kwargs.update(kwargs)
+        return _kwargs
 
     def _table_name_for(self, schema_name):
         if 'dynamodb_table_name_format' in self._conn.options:
@@ -30,34 +31,34 @@ class DynamoDBBackend(BaseBackend):
         else:
             return schema_name
 
-    def put_item(self, schema_name, _data, overwrite=False):
+    def put_item(self, schema_name, _data, overwrite=False, **kwargs):
         table = Table(self._table_name_for(schema_name))
         return table.put_item(data=_data, overwrite=overwrite)
 
-    def get_item(self, schema_name, _id):
+    def get_item(self, schema_name, _id, **kwargs):
         try:
             table = Table(self._table_name_for(schema_name))
             return dict(table.get_item(**self._kwargs_for_id(schema_name, _id)))
         except BotoItemNotFound:
             raise ItemNotFound("Item not found for id {} in {}.".format(_id, schema_name))
 
-    def delete_item(self, schema_name, _id):
+    def delete_item(self, schema_name, _id, **kwargs):
         table = Table(self._table_name_for(schema_name))
-        return table.delete_item(**self._kwargs_for_id(schema_name, _id))
+        return table.delete_item(**self._kwargs_for_id(schema_name, _id, **kwargs))
 
-    def query(self, schema_name, _w, limit=10):
+    def query(self, schema_name, _w, limit=10, **kwargs):
         table = Table(self._table_name_for(schema_name))
         kwargs = parse_w_for_kwargs(_w)
         kwargs['limit'] = limit
         return (dict(item) for item in table.query_2(**kwargs))
 
-    def scan(self, schema_name, _w, limit=10):
+    def scan(self, schema_name, _w, limit=10, **kwargs):
         table = Table(self._table_name_for(schema_name))
         kwargs = parse_w_for_kwargs(_w)
         kwargs['limit'] = limit
         return (dict(item) for item in table.scan(**kwargs))
 
-    def query_count(self, schema_name, _w):
+    def query_count(self, schema_name, _w, **kwargs):
         table = Table(self._table_name_for(schema_name))
         kwargs = parse_w_for_kwargs(_w)
         return table.query_count(**kwargs)
@@ -77,9 +78,10 @@ class DynamoDBBackend(BaseBackend):
 
 def parse_w_for_kwargs(_w):
     ret = {}
-    if _w[0] == 'and':
-        ret.update(parse_w_for_kwargs(_w[1]))
-        ret.update(parse_w_for_kwargs(_w[2]))
-    elif _w[0] in ['eq', 'beginswith', 'lte', 'gte', 'lt', 'gt']:  # FIXME
-        ret['__'.join([_w[1], _w[0]])] = _w[2]
+    if _w is not None:
+        if _w[0] == 'and':
+            ret.update(parse_w_for_kwargs(_w[1]))
+            ret.update(parse_w_for_kwargs(_w[2]))
+        elif _w[0] in ['eq', 'beginswith', 'lte', 'gte', 'lt', 'gt']:  # FIXME
+            ret['__'.join([_w[1], _w[0]])] = _w[2]
     return ret

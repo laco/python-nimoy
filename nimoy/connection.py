@@ -21,7 +21,7 @@ class DatabaseConnection(object):
         self.options = kwargs
         self.backend = import_class(backend_cls)(self)
 
-    def _add_version_info(self, schema_name, _data):
+    def _add_version_info(self, schema_name, _data, **kwargs):
         _data['__sv'] = self.schema.get_fingerprint(schema_name)
         return _data
 
@@ -36,20 +36,20 @@ class DatabaseConnection(object):
                         schema_name, _data))),
             overwrite=overwrite)
 
-    def get_item(self, schema_name, _id):
-        return self.backend.get_item(schema_name, _id)
+    def get_item(self, schema_name, _id, **kwargs):
+        return self.backend.get_item(schema_name, _id, **kwargs)
 
-    def delete_item(self, schema_name, _id):
-        return self.backend.delete_item(schema_name, _id)
+    def delete_item(self, schema_name, _id, **kwargs):
+        return self.backend.delete_item(schema_name, _id, **kwargs)
 
-    def query(self, schema_name, _w, limit=10):
-        return self.backend.query(schema_name, _w, limit)
+    def query(self, schema_name, _w, limit=10, **kwargs):
+        return self.backend.query(schema_name, _w, limit, **kwargs)
 
-    def scan(self, schema_name, _w, limit=10):
-        return self.backend.scan(schema_name, _w, limit)
+    def scan(self, schema_name, _w, limit=10, **kwargs):
+        return self.backend.scan(schema_name, _w, limit, **kwargs)
 
-    def query_count(self, schema_name, _w):
-        return self.backend.query_count(schema_name, _w)
+    def query_count(self, schema_name, _w, **kwargs):
+        return self.backend.query_count(schema_name, _w, **kwargs)
 
     def uuid(self):
         return _uuid.uuid4().hex
