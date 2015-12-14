@@ -67,7 +67,10 @@ class DynamoDBBackend(BaseBackend):
         if isinstance(_data, dict):
             return {k: self.prepare_data(schema_name, v, level=level+1) for k, v in _data.items()}
         elif isinstance(_data, (str, int)):
-            return _data
+            if _data == '':
+                return None
+            else:
+                return _data
         elif isinstance(_data, float):
             return decimal.Decimal(str(_data))
         elif isinstance(_data, (list, tuple)):
