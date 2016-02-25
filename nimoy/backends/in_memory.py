@@ -128,7 +128,9 @@ def parse_wt(wt, fmap=None):
     def _startswith(field, value):
         return lambda obj: _x_f(obj, field).startswith(value) if hasattr(_x_f(obj, field), 'startswith') else False
 
-    if wt[0] == 'eq':
+    if wt is None:
+        return lambda obj: True
+    elif wt[0] == 'eq':
         return _eq(wt[1], wt[2])
     elif wt[0] == 'neq':
         return _field_value_predicate(wt[1], wt[2], _operator=operator.ne)
